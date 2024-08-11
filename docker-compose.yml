@@ -22,7 +22,7 @@ services:
       # build those images first
       - mysql
     ports:
-      # bind on our 5000 port because most people have 80, 8080 already bound
+      # bind on our 5001 port because most people have 80, 8080 already bound
       - "5001:5000"
 
   mysql:
@@ -49,5 +49,6 @@ volumes:
   # just a persistance data
   mysql-data:
     driver: local
+
 
 

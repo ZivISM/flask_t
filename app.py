@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@{}/{}'.format(
     os.getenv('DB_USER', 'flask'),
@@ -15,12 +16,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # First method: python app.py (app.run needs to be included, like the if statement below)
 # Second method: flask run (after exporting 2 env variables:
 # export FLASK_ENV=development, export FLASK_APP=app.py)
+
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     complete = db.Column(db.Boolean)
 
-# create the DB on demand
+# Create the DB on demand
 @app.before_first_request
 def create_tables():
     db.create_all()
@@ -33,7 +35,7 @@ def index():
 @app.route('/add', methods=["POST"])
 def add():
     title = request.form.get("title")
-    new_todo = Todo(title=title,complete=False)
+    new_todo = Todo(title=title, complete=False)
     db.session.add(new_todo)
     db.session.commit()
     return redirect(url_for("index"))
@@ -52,8 +54,21 @@ def delete(todo_id):
     db.session.commit()
     return redirect(url_for("index"))
 
+@app.route('/health')
+def health_check():
+    try:
+        # Perform a simple query to check if the connection to the database is working
+        db.session.execute('SELECT 1')
+        return jsonify(status="healthy", message="Database connection successful"), 200
+    except Exception as e:
+        return jsonify(status="unhealthy", message=str(e)), 500
+
+@app.route('/health')
+def health():
+    return 'OK', 200
+
 if __name__ == "__main__":
-    #db.create_all()
+    # db.create_all()
     app.run(host=os.getenv('IP', '0.0.0.0'), debug=True)
     # app.run(host=os.getenv('IP', '0.0.0.0'), debug=True,
     #         port=int(os.getenv('PORT', 4444)))
