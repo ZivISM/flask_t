@@ -69,6 +69,6 @@ def health():
 
 if __name__ == "__main__":
     # db.create_all()
-    app.run(host=os.getenv('IP', '0.0.0.0'), debug=True)
+    app.run(host=os.getenv('IP', '0.0.0.0'), port=int(os.getenv('PORT', 5000)), debug=True)
     # app.run(host=os.getenv('IP', '0.0.0.0'), debug=True,
     #         port=int(os.getenv('PORT', 4444)))
