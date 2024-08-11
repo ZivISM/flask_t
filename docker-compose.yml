@@ -1,0 +1,53 @@
+version: '3'
+services:
+  app:
+    image: flask_app:latest
+    container_name: flask_app
+    restart: unless-stopped
+    build:
+      # build the image from Dockerfile
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      # set database credentials
+      DB_HOST: mysql
+      DB_NAME: flask
+      DB_USER: flask
+      DB_PASSWORD: password
+
+    links:
+      # network connection with these services
+      - mysql
+    depends_on:
+      # build those images first
+      - mysql
+    ports:
+      # bind on our 5000 port because most people have 80, 8080 already bound
+      - "5001:5000"
+
+  mysql:
+    container_name: flask_mysql
+    # let's grab from mysql 5.7 image
+    image: mysql:latest
+    platform: linux/amd64
+    volumes:
+        # pass volume named mysql-data to mysql container
+      - mysql-data:/var/lib/mysql
+      - ./db/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+      # credentials
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: flask
+      MYSQL_USER: flask
+      MYSQL_PASSWORD: password
+
+# volumes definition here
+volumes:
+  # just a persistance data
+  mysql-data:
+    driver: local
+
+
