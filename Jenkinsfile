@@ -1,4 +1,4 @@
-pairpipeline {
+pipeline {
     agent any
 
     parameters {
@@ -65,7 +65,7 @@ pairpipeline {
                 // Debugging Step: Print the IP to ensure it's correctly passed
                 echo "Deploying to EC2 instance at ${params.AWS_EC2_IP}"
 
-                sshagent (credentials: ['aws-keypair']) {
+                sshagent (credentials: ['aws']) {
                     sh """
                     ssh -o StrictHostKeyChecking=no ec2-user@${params.AWS_EC2_IP} << EOF
                     # Stop any existing containers using port 80
@@ -90,4 +90,5 @@ pairpipeline {
             cleanWs()
         }
     }
+}
 }
