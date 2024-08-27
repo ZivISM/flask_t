@@ -19,8 +19,8 @@ pipeline {
             }
         }
 
-         stage('Check Docker Installation') {
-             steps {
+        stage('Check Docker Installation') {
+            steps {
                 sh 'docker --version'
             }
         }
@@ -62,7 +62,6 @@ pipeline {
 
         stage('Deploy to EC2') {
             steps {
-                // Debugging Step: Print the IP to ensure it's correctly passed
                 echo "Deploying to EC2 instance at ${params.AWS_EC2_IP}"
 
                 sshagent (credentials: ['aws']) {
@@ -78,7 +77,8 @@ pipeline {
 
                     # Pull the latest image and run the new container
                     docker pull ${params.DOCKERHUB_USERNAME}/${params.DOCKER_IMAGE}:${BUILD_ID}
-                    docker run -d --platform linux/amd64 -p 80:5000 ${params.DOCKERHUB_USERNAME}/${params.DOCKER_IMAGE}:${BUILD_ID}
+                    docker run -d --platform linux/amd64 -p 80:5000 ${params.DOCKERHUB_IMAGE}:${BUILD_ID}
+                    EOF
                     """
                 }
             }
@@ -90,5 +90,4 @@ pipeline {
             cleanWs()
         }
     }
-}
 }
