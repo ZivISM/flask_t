@@ -3,9 +3,9 @@ pipeline {
 
     parameters {
         string(name: 'DOCKER_IMAGE', defaultValue: 'flaskapp_personal', description: 'Docker image name')
-        string(name: 'DOCKERHUB_USERNAME', defaultValue: 'orikerbis', description: 'Docker Hub username')
+        string(name: 'DOCKERHUB_USERNAME', defaultValue: 'zivism', description: 'Docker Hub username')
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Git branch to build')
-        string(name: 'AWS_EC2_IP', defaultValue: '3.83.88.8', description: 'EC2 instance IP address')
+        string(name: 'AWS_EC2_IP', defaultValue: '18.185.104.4', description: 'EC2 instance IP address')
     }
 
     environment {
@@ -15,7 +15,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: "${params.BRANCH_NAME}", credentialsId: 'git', url: 'https://github.com/orikerbis/personal_project.git'
+                git branch: "${params.BRANCH_NAME}", credentialsId: 'git', url: 'https://github.com/ZivISM/flask_t'
             }
         }
 
