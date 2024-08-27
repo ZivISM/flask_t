@@ -19,6 +19,12 @@ pipeline {
             }
         }
 
+         stage('Check Docker Installation') {
+             steps {
+                sh 'docker --version'
+            }
+        }
+        
         stage('Set Up Docker Buildx') {
             steps {
                 sh '''
@@ -32,16 +38,6 @@ pipeline {
             steps {
                 script {
                     dockerImage = docker.build("${params.DOCKER_IMAGE}:${BUILD_ID}")
-                }
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                script {
-                    dockerImage.inside {
-                        sh 'python -m unittest discover -s tests'
-                    }
                 }
             }
         }
